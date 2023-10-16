@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useGlobalContext } from "./context";
 
-const url = `https://api.unsplash.com/photos?client_id=${
+const url = `https://api.unsplash.com/search/photos?client_id=${
   import.meta.env.VITE_API_KEY
 }`;
 
@@ -17,7 +17,9 @@ const Gallery = () => {
       let apiUrl = url;
 
       if (randomMode) {
-        apiUrl += `&random?count=10`;
+        apiUrl = `https://api.unsplash.com/photos/random/?count=10&client_id=${
+          import.meta.env.VITE_API_KEY
+        }`;
       } else if (searchTerm) {
         apiUrl += `&query=${searchTerm}`;
       }
@@ -49,7 +51,11 @@ const Gallery = () => {
     );
   }
 
-  const results = Array.isArray(response.data) ? response.data : [];
+  const results = Array.isArray(response.data)
+    ? response.data
+    : Array.isArray(response.data.results)
+    ? response.data.results
+    : [];
 
   if (results.length < 1) {
     return (
