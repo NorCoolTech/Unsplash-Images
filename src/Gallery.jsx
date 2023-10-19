@@ -35,7 +35,11 @@ const Gallery = () => {
         const result = await axios.get(apiUrl);
         return result.data;
       } catch (error) {
-        console.error("Error fetching images:", error);
+        if (error.response && error.response.status === 403) {
+          console.error("Rate Limit Exceeded. Please try again later.");
+        } else {
+          console.error("Error fetching images:", error);
+        }
         throw error;
       }
     },
@@ -44,8 +48,8 @@ const Gallery = () => {
 
   if (response.isLoading) {
     return (
-      <section className="image-container">
-        <h4>Loading...</h4>
+      <section className="loading-container">
+        <h4 className="loading"></h4>
       </section>
     );
   }
@@ -53,7 +57,7 @@ const Gallery = () => {
   if (response.isError) {
     return (
       <section className="image-container">
-        <h4>There was an error...</h4>
+        <h4>Error: {response.error.message}</h4>
       </section>
     );
   }
@@ -97,7 +101,6 @@ const Gallery = () => {
           <option value="20">20</option>
           <option value="25">25</option>
           <option value="30">30</option>
-          <option value="35">35</option>
         </select>
         <button className="btn" onClick={() => setRandomMode(false)}>
           Clear Random

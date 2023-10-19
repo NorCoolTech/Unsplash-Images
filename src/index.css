@@ -395,7 +395,7 @@ Gallery
   gap:1rem;
 }
 
-.image-container {
+.image-container,.loading-container {
   width: var(--view-width);
   max-width: var(--max-width);
   margin: 3rem auto;
