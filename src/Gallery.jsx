@@ -1,7 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import Select from "react-select";
 import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
 import { useGlobalContext } from "./context";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowDown } from "@fortawesome/free-solid-svg-icons";
 
 const url = `https://api.unsplash.com/search/photos?client_id=${
   import.meta.env.VITE_API_KEY
@@ -46,6 +49,47 @@ const Gallery = () => {
     enabled: true, // Always enable the query
   });
 
+  const options = [
+    { value: "1", label: "1" },
+    { value: "2", label: "2" },
+    { value: "3", label: "3" },
+    { value: "4", label: "4" },
+    { value: "5", label: "5" },
+    { value: "10", label: "10" },
+    { value: "15", label: "15" },
+    { value: "20", label: "20" },
+    { value: "25", label: "25" },
+    { value: "30", label: "30" },
+  ];
+
+  const customStyles = {
+    control: (provided, state) => ({
+      ...provided,
+      border: "1px solid #ced4da", // Light gray border
+      borderRadius: "8px",
+      boxShadow: state.isFocused ? "0 0 0 0.2rem rgba(0,123,255,.25)" : "none", // Add a subtle blue border on focus
+      backgroundColor: state.isFocused ? "#fff" : "#f8f9fa", // White background on focus
+      "&:hover": {
+        border: "1px solid #adb5bd", // Darker border on hover
+      },
+      width: "150px", // Adjust width as needed
+      padding: "8px 12px", // Add padding to control spacing
+    }),
+    indicatorSeparator: (provided) => ({
+      ...provided,
+      display: "none", // Hide the indicator separator
+    }),
+    dropdownIndicator: (provided, state) => ({
+      ...provided,
+      color: state.isFocused ? "#007bff" : "#495057", // Blue color on focus
+      "&:hover": {
+        color: "#007bff", // Darker blue on hover
+      },
+    }),
+  };
+
+
+
   if (response.isLoading) {
     return (
       <section className="loading-container">
@@ -79,29 +123,22 @@ const Gallery = () => {
   return (
     <>
       <div className="gallery-filters">
+        <Select
+          options={options}
+          value={options.find((option) => option.value === randomCount)}
+          onChange={(selectedOption) => {
+            setRandomCount(parseInt(selectedOption.value));
+            setRandomMode(true);
+          }}
+          components={{
+            IndicatorSeparator: () => null,
+            DropdownIndicator: () => <FontAwesomeIcon icon={faArrowDown} />,
+          }}
+          styles={customStyles} // Apply the styles here
+        />
         <button className="btn" onClick={() => setRandomMode(true)}>
           Get Random Images
         </button>
-        <select
-          name="randomImg"
-          id="randomImg"
-          value={randomCount}
-          onChange={(e) => {
-            setRandomCount(parseInt(e.target.value));
-            setRandomMode(true);
-          }}
-        >
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="10">10</option>
-          <option value="15">15</option>
-          <option value="20">20</option>
-          <option value="25">25</option>
-          <option value="30">30</option>
-        </select>
         <button className="btn" onClick={() => setRandomMode(false)}>
           Clear Random
         </button>
