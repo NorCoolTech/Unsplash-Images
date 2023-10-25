@@ -11,7 +11,7 @@ const url = `https://api.unsplash.com/search/photos?client_id=${
 }`;
 
 const Gallery = () => {
-  const { searchTerm } = useGlobalContext();
+  const { searchTerm, isDarkTheme } = useGlobalContext();
   const [randomMode, setRandomMode] = useState(false);
   const [randomCount, setRandomCount] = useState(0);
 
@@ -46,7 +46,7 @@ const Gallery = () => {
         throw error;
       }
     },
-    enabled: true, // Always enable the query
+    enabled: true,
   });
 
   const options = [
@@ -62,31 +62,61 @@ const Gallery = () => {
     { value: "30", label: "30" },
   ];
 
-  const customStyles = {
-    control: (provided, state) => ({
-      ...provided,
-      border: "1px solid #ced4da", // Light gray border
-      borderRadius: "8px",
-      boxShadow: state.isFocused ? "0 0 0 0.2rem rgba(0,123,255,.25)" : "none", // Add a subtle blue border on focus
-      backgroundColor: state.isFocused ? "#fff" : "#f8f9fa", // White background on focus
-      "&:hover": {
-        border: "1px solid #adb5bd", // Darker border on hover
-      },
-      width: "150px", // Adjust width as needed
-      padding: "8px 12px", // Add padding to control spacing
-    }),
-    indicatorSeparator: (provided) => ({
-      ...provided,
-      display: "none", // Hide the indicator separator
-    }),
-    dropdownIndicator: (provided, state) => ({
-      ...provided,
-      color: state.isFocused ? "#007bff" : "#495057", // Blue color on focus
-      "&:hover": {
-        color: "#007bff", // Darker blue on hover
-      },
-    }),
-  };
+ const customStyles = {
+   control: (provided, state) => ({
+     ...provided,
+     border: "2px solid var(--primary-200)",
+     borderRadius: "var(--borderRadius)",
+     boxShadow: state.isFocused ? "0 0 0 0.2rem rgba(0,123,255,.25)" : "none",
+     backgroundColor: state.isFocused
+       ? isDarkTheme
+         ? "var(--backgroundColor)"
+         : "var(--grey-100)"
+       : isDarkTheme
+       ? "var(--grey-700)"
+       : "var(--primary-50)",
+     color: isDarkTheme ? "var(--grey-50)" : "var(--grey-900)",
+     "&:hover": {
+       border: "2px solid #adb5bd",
+     },
+     width: "150px",
+     padding: "4px 12px",
+   }),
+   indicatorSeparator: (provided) => ({
+     ...provided,
+     display: "none",
+   }),
+   dropdownIndicator: (provided, state) => ({
+     ...provided,
+     color: state.isFocused ? "#007bff" : "#495057",
+     "&:hover": {
+       color: "#007bff",
+     },
+   }),
+   option: (provided, state) => ({
+     ...provided,
+     color: state.isFocused
+       ? isDarkTheme
+         ? "var(--grey-50)"
+         : "var(--grey-900)"
+       : isDarkTheme
+       ? "var(--grey-900)"
+       : "var(--grey-900)",
+     backgroundColor: state.isSelected
+       ? isDarkTheme
+         ? "var(--grey-50)"
+         : "var(--grey-900)"
+       : state.isFocused
+       ? isDarkTheme
+         ? "var(--grey-500)"
+         : "var(--grey-500)"
+       : "transparent",
+     "&:hover": {
+       backgroundColor: isDarkTheme ? "var(--grey-900)" : "var(--grey-300)",
+       color: isDarkTheme ? "var(--grey-90)" : "var(--grey-900)",
+     },
+   }),
+ };
 
 
 
@@ -134,7 +164,7 @@ const Gallery = () => {
             IndicatorSeparator: () => null,
             DropdownIndicator: () => <FontAwesomeIcon icon={faArrowDown} />,
           }}
-          styles={customStyles} // Apply the styles here
+          styles={customStyles}
         />
         <button className="btn" onClick={() => setRandomMode(true)}>
           Get Random Images
