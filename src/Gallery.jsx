@@ -173,16 +173,20 @@ const Gallery = () => {
           Clear Random
         </button>
       </div>
-      <section className="image-container">
+      <section className="img-container">
         {results.map((item) => {
           const url = item?.urls?.regular;
           return (
-            <img
-              src={url}
-              key={item.id}
-              alt={item.alt_description}
-              className="img"
-            />
+            <div className="img-wrapper" key={item.id}>
+              <div className="img-container">
+                <img
+                  src={url}
+                  key={item.id}
+                  alt={item.alt_description}
+                  className="img"
+                />
+              </div>
+            </div>
           );
         })}
       </section>
